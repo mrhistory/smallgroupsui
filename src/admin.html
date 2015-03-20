@@ -1,0 +1,15 @@
+<template>
+	<section>
+		<h2>${heading}</h2>
+		<div class="row">
+			<div class="col-sm-12 col-md-5 col-md-offset-1">
+				<h3>Test Results:</h3>
+				<div repeat.for="result of testResults" class="alert ${result.result == 'Passed' ? 'alert-success' : 'alert-danger'}">
+					<span>${result.test}: ${result.result}</span>
+				</div>
+				<button class="btn btn-primary" click.delegate="runTests()">Run Tests</button>
+				<button class="btn tbn-default" click.delegate="clearTestResults()">Clear</button>
+			</div>
+		</div>
+	</section>
+</template>
