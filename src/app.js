@@ -7,7 +7,8 @@ export class App {
 		this.router.configure(config => {
 			config.title = 'SmallGroups';
 			config.map([
-				{route: ['', 'admin'], moduleId: 'admin', nav: true, title: 'Admin'},
+				{route: ['admin'], moduleId: 'admin', nav: true, title: 'Admin'},
+				{route: ['', 'signup'], moduleId: 'sign-up', nav: true, title: 'Sign Up'}
 			]);
 		});
 		this.userId = 0;

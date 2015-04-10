@@ -22,6 +22,10 @@ export class MemberApi {
 		return this.http.get(`${memberId}`);
 	}
 
+	addMember(member) {
+		return this.http.post('', member);
+	}
+
 	login(email, password) {
 		var params = {email: email, password: password};
 		return this.http.post('login', params);

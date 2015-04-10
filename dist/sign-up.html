@@ -1,0 +1,45 @@
+<template>
+    <section>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-4 col-md-offset-4">
+                    <div class="jumbotron">
+                        <div show.bind="errors.length > 0" class="alert alert-danger" role="alert">
+                            <ul>
+                                <li repeat.for="error of errors">${error}</li>
+                            </ul>
+                        </div>
+                        <div show.bind="successMessage.length > 0" class="alert alert-success" role="alert">${successMessage}</div>
+                        <h2>${heading}</h2>
+                        <form role="form" submit.delegate="signUp()">
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input type="text" value.bind="firstName" class="form-control" id="firstName" placeholder="first name">
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" value.bind="lastName" class="form-control" id="lastName" placeholder="last name">
+                            </div>
+                            <div class="form-group">
+                                <label for="emailAddress">Email Address</label>
+                                <input type="email" value.bind="emailAddress" class="form-control" id="emailAddress" placeholder="email address">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" value.bind="password" class="form-control" id="password" placeholder="password"
+                                input.delegate="checkPasswordsMatch()">
+                            </div>
+                            <div class="form-group ${passwordsMatch ? 'has-success' : 'has-error'}">
+                                <label for="confirmPassword">Confirm Password</label>
+                                <input type="password" value.bind="confirmPassword" class="form-control" id="confirmPassword" placeholder="confirm password"
+                                input.delegate="checkPasswordsMatch()">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="reset" click.delegate="clearAll()" class="btn btn=default">Clear</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+	</section>
+</template>
