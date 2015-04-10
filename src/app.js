@@ -7,10 +7,11 @@ export class App {
 		this.router.configure(config => {
 			config.title = 'SmallGroups';
 			config.map([
-				{route: ['admin'], moduleId: 'admin', nav: true, title: 'Admin'},
-				{route: ['', 'signup'], moduleId: 'sign-up', nav: true, title: 'Sign Up'}
+				{route: ['admin'], moduleId: 'admin', nav: this.loggedIn, title: 'Admin'},
+				{route: ['', 'signup'], moduleId: 'sign-up', nav: !this.loggedIn, title: 'Sign Up'}
 			]);
 		});
-		this.userId = 0;
+		this.activeUser = undefined; // Global as the rest of the app needs to access this.
+		this.loggedIn = false; // Global as the rest of the app needs to access this.
 	}
 }

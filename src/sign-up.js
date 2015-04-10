@@ -10,28 +10,24 @@ export class SignUp {
         this.successMessage = '';
 
         // Member fields
-        this.firstName = '';
-        this.lastName = '';
-        this.emailAddress = '';
-        this.password = '';
+        this.member = {
+            firstName: '',
+            lastName: '',
+            email: '',
+            password: ''
+        };
         this.confirmPassword = '';
     }
 
     checkPasswordsMatch() {
-        this.passwordsMatch = this.password == this.confirmPassword;
+        this.passwordsMatch = this.member.password == this.confirmPassword;
     }
 
     signUp() {
         this.errors = [];
         this.successMessage = '';
-        var member = {
-            firstName: this.firstName,
-            lastName: this.lastName,
-            email: this.emailAddress,
-            password: this.password
-        };
-        this.memberApi.addMember(member).then(function(response) {
-            this.successMessage = 'New member saved.'; // Could be some kind of config later.
+        this.memberApi.addMember(this.member).then(function(response) {
+            this.successMessage = 'New member saved.'; // This should redirect to login screen, or a message to check email for activation link.
             this.clearEntries();
         }.bind(this)).catch(function(err) {
             if (err.content.error.details != null) {
@@ -46,10 +42,10 @@ export class SignUp {
     }
 
     clearEntries() {
-        this.firstName = '';
-        this.lastName = '';
-        this.emailAddress = '';
-        this.password = '';
+        this.member.firstName = '';
+        this.member.lastName = '';
+        this.member.email = '';
+        this.member.password = '';
         this.confirmPassword = '';
         this.checkPasswordsMatch();
     }
