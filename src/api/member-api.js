@@ -10,12 +10,24 @@ export class MemberApi {
 		});
 	}
 
+	getMembers() {
+		return this.http.get();
+	}
+
+	getMember(memberId) {
+		return this.http.get(`${memberId}`);
+	}
+
 	login(email, password) {
 		var params = {email: email, password: password};
 		return this.http.post('login', params);
 	}
 
-	logout(access_token) {
-		return this.http.post(`logout?access_token=${access_token}`);
+	logout(accessToken) {
+		return this.http.post(`logout?access_token=${accessToken}`);
+	}
+
+	getGroups(memberId) {
+		return this.http.get(`${memberId}/groups`);
 	}
 }

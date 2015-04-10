@@ -1,9 +1,13 @@
-System.register(["./api/member-api"], function (_export) {
-	var MemberApi, _createClass, _classCallCheck, Admin;
+System.register(["./api/member-api", "./api/group-api", "./api/prayer-request-api"], function (_export) {
+	var MemberApi, GroupApi, PrayerRequestApi, _createClass, _classCallCheck, Admin;
 
 	return {
 		setters: [function (_apiMemberApi) {
 			MemberApi = _apiMemberApi.MemberApi;
+		}, function (_apiGroupApi) {
+			GroupApi = _apiGroupApi.GroupApi;
+		}, function (_apiPrayerRequestApi) {
+			PrayerRequestApi = _apiPrayerRequestApi.PrayerRequestApi;
 		}],
 		execute: function () {
 			"use strict";
@@ -13,22 +17,38 @@ System.register(["./api/member-api"], function (_export) {
 			_classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 			Admin = _export("Admin", (function () {
-				function Admin(memberApi) {
+				function Admin(memberApi, groupApi, prayerRequestApi) {
 					_classCallCheck(this, Admin);
 
 					this.heading = "Admin";
 					this.memberApi = memberApi;
+					this.groupApi = groupApi;
+					this.prayerRequestApi = prayerRequestApi;
 					this.testResults = [];
-					this.accessToken = "";
 				}
 
 				_createClass(Admin, {
 					runTests: {
 						value: function runTests() {
 							this.clearTestResults();
-							this.runLoginTest(this).then(function (_this) {
-								_this.runLogoutTest(_this);
+							var memberTestResult = this.runMemberTest(this.memberApi).then(function () {
+								return true;
+							})["catch"](function (err) {
+								return false;
 							});
+							var groupTestResult = this.runGroupTest(this.groupApi).then(function () {
+								return true;
+							})["catch"](function (err) {
+								return false;
+							});
+							var prayerRequestTestResult = this.runPrayerRequestTest(this.prayerRequestApi).then(function () {
+								return true;
+							})["catch"](function (err) {
+								return false;
+							});
+							this.testResults.push({ test: "Member API", result: memberTestResult ? "Passed" : "Failed" });
+							this.testResults.push({ test: "Group API", result: groupTestResult ? "Passed" : "Failed" });
+							this.testResults.push({ test: "Prayer Request API", result: prayerRequestTestResult ? "Passed" : "Failed" });
 						}
 					},
 					clearTestResults: {
@@ -36,28 +56,34 @@ System.register(["./api/member-api"], function (_export) {
 							this.testResults = [];
 						}
 					},
-					runLoginTest: {
-						value: function runLoginTest(_this) {
+					runMemberTest: {
+						value: function runMemberTest(memberApi) {
 							return new Promise(function (resolve, reject) {
-								_this.memberApi.login("mrhistory@gmail.com", "pw123").then(function (res) {
-									_this.accessToken = res.content.id;
-									_this.testResults.push({ test: "Login", result: "Passed" });
-									resolve(_this);
+								memberApi.getMembers().then(function (res) {
+									resolve();
 								}, function (err) {
-									_this.testResults.push({ test: "Login", result: "Failed" });
 									reject(err);
 								});
 							});
 						}
 					},
-					runLogoutTest: {
-						value: function runLogoutTest(_this) {
+					runGroupTest: {
+						value: function runGroupTest(groupApi) {
 							return new Promise(function (resolve, reject) {
-								_this.memberApi.logout(_this.accessToken).then(function (res) {
-									_this.testResults.push({ test: "Logout", result: "Passed" });
-									resolve(_this);
+								groupApi.getGroups().then(function (res) {
+									resolve();
 								}, function (err) {
-									_this.testResults.push({ test: "Logout", result: "Failed" });
+									reject(err);
+								});
+							});
+						}
+					},
+					runPrayerRequestTest: {
+						value: function runPrayerRequestTest(prayerRequestApi) {
+							return new Promise(function (resolve, reject) {
+								prayerRequestApi.getPrayerRequests().then(function (res) {
+									resolve();
+								}, function (err) {
 									reject(err);
 								});
 							});
@@ -66,7 +92,7 @@ System.register(["./api/member-api"], function (_export) {
 				}, {
 					inject: {
 						value: function inject() {
-							return [MemberApi];
+							return [MemberApi, GroupApi, PrayerRequestApi];
 						}
 					}
 				});
@@ -76,4 +102,4 @@ System.register(["./api/member-api"], function (_export) {
 		}
 	};
 });
-//# sourceMappingURL=data:application/json;base64,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
+//# sourceMappingURL=data:application/json;base64,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

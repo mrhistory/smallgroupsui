@@ -1,47 +1,67 @@
 import {MemberApi} from './api/member-api';
+import {GroupApi} from './api/group-api';
+import {PrayerRequestApi} from './api/prayer-request-api';
 
 export class Admin {
-	static inject() { return [MemberApi]; }
-	constructor(memberApi) {
+	static inject() { return [MemberApi, GroupApi, PrayerRequestApi]; }
+	constructor(memberApi, groupApi, prayerRequestApi) {
 		this.heading = "Admin";
 		this.memberApi = memberApi;
+		this.groupApi = groupApi;
+		this.prayerRequestApi = prayerRequestApi;
 		this.testResults = [];
-		this.accessToken = '';
 	}
 
 	runTests() {
 		this.clearTestResults();
-		this.runLoginTest(this).then(function(_this) {
-			_this.runLogoutTest(_this);
+		var memberTestResult = this.runMemberTest(this.memberApi).then(function() {
+			return true;
+		}).catch(function(err) {
+			return false;
 		});
+		var groupTestResult = this.runGroupTest(this.groupApi).then(function() {
+			return true;
+		}).catch(function(err) {
+			return false;
+		});
+		var prayerRequestTestResult = this.runPrayerRequestTest(this.prayerRequestApi).then(function() {
+			return true;
+		}).catch(function(err) {
+			return false;
+		});
+		this.testResults.push({test: 'Member API', result: memberTestResult ? 'Passed' : 'Failed'});
+		this.testResults.push({test: 'Group API', result: groupTestResult ? 'Passed' : 'Failed'});
+		this.testResults.push({test: 'Prayer Request API', result: prayerRequestTestResult ? 'Passed' : 'Failed'});
 	}
 
 	clearTestResults() {
 		this.testResults = [];
 	}
 
-	runLoginTest(_this) {
+	runMemberTest(memberApi) {
 		return new Promise(function(resolve, reject) {
-			_this.memberApi.login('mrhistory@gmail.com', 'pw123').then(function(res) {
-				_this.accessToken = res.content.id;
-				_this.testResults.push({test: 'Login', result: 'Passed'});
-				resolve(_this);
-			}, function(err) {
-				_this.testResults.push({test: 'Login', result: 'Failed'});
-				reject(err);
-			});
+			memberApi.getMembers().then(
+				function(res) {	resolve(); },
+				function(err) {	reject(err); }
+			);
 		});
 	}
 
-	runLogoutTest(_this) {
+	runGroupTest(groupApi) {
 		return new Promise(function(resolve, reject) {
-			_this.memberApi.logout(_this.accessToken).then(function(res) {
-				_this.testResults.push({test: 'Logout', result: 'Passed'});
-				resolve(_this);
-			}, function(err) {
-				_this.testResults.push({test: 'Logout', result: 'Failed'});
-				reject(err);
-			});
+			groupApi.getGroups().then(
+				function(res) {	resolve(); },
+				function(err) {	reject(err); }
+			);
+		});
+	}
+
+	runPrayerRequestTest(prayerRequestApi) {
+		return new Promise(function(resolve, reject) {
+			prayerRequestApi.getPrayerRequests().then(
+				function(res) {	resolve(); },
+				function(err) {	reject(err); }
+			);
 		});
 	}
 }

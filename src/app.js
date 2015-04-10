@@ -10,5 +10,6 @@ export class App {
 				{route: ['', 'admin'], moduleId: 'admin', nav: true, title: 'Admin'},
 			]);
 		});
+		this.userId = 0;
 	}
 }
