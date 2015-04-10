@@ -10,6 +10,10 @@ export class MemberApi {
 		});
 	}
 
+	ping() {
+		return this.http.get('?filter[limit]=1');
+	}
+
 	getMembers() {
 		return this.http.get();
 	}

@@ -10,6 +10,10 @@ export class PrayerRequestApi {
 		});
 	}
 
+	ping() {
+		return this.http.get('?filter[limit]=1');
+	}
+
 	getPrayerRequests() {
 		return this.http.get();
 	}

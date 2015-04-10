@@ -10,6 +10,10 @@ export class GroupApi {
         });
     }
 
+    ping() {
+		return this.http.get('?filter[limit]=1');
+	}
+
     getGroups() {
         return this.http.get();
     }

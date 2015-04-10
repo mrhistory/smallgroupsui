@@ -14,54 +14,46 @@ export class Admin {
 
 	runTests() {
 		this.clearTestResults();
-		var memberTestResult = this.runMemberTest(this.memberApi).then(function() {
-			return true;
-		}).catch(function(err) {
-			return false;
-		});
+		this.runMemberTest(this.memberApi).then(function() {
+			this.addTestResult('Member API', 'Passed');
+		}.bind(this)).catch(function(err) {
+			this.addTestResult('Member API', 'Failed');
+		}.bind(this));
 		var groupTestResult = this.runGroupTest(this.groupApi).then(function() {
-			return true;
-		}).catch(function(err) {
-			return false;
-		});
+			this.addTestResult('Group API', 'Passed');
+		}.bind(this)).catch(function(err) {
+			this.addTestResult('Group API', 'Failed');
+		}.bind(this));
 		var prayerRequestTestResult = this.runPrayerRequestTest(this.prayerRequestApi).then(function() {
-			return true;
-		}).catch(function(err) {
-			return false;
-		});
-		this.testResults.push({test: 'Member API', result: memberTestResult ? 'Passed' : 'Failed'});
-		this.testResults.push({test: 'Group API', result: groupTestResult ? 'Passed' : 'Failed'});
-		this.testResults.push({test: 'Prayer Request API', result: prayerRequestTestResult ? 'Passed' : 'Failed'});
+			this.addTestResult('Prayer Request API', 'Passed');
+		}.bind(this)).catch(function(err) {
+			this.addTestResult('Prayer Request API', 'Failed');
+		}.bind(this));
 	}
 
 	clearTestResults() {
 		this.testResults = [];
 	}
 
+	addTestResult(testName, testResult) {
+		this.testResults.push({test: testName, result: testResult});
+	}
+
 	runMemberTest(memberApi) {
 		return new Promise(function(resolve, reject) {
-			memberApi.getMembers().then(
-				function(res) {	resolve(); },
-				function(err) {	reject(err); }
-			);
+			memberApi.ping().then(function(res) { resolve(); }, function(err) { reject(err); });
 		});
 	}
 
 	runGroupTest(groupApi) {
 		return new Promise(function(resolve, reject) {
-			groupApi.getGroups().then(
-				function(res) {	resolve(); },
-				function(err) {	reject(err); }
-			);
+			groupApi.ping().then(function(res) { resolve(); }, function(err) { reject(err); });
 		});
 	}
 
 	runPrayerRequestTest(prayerRequestApi) {
 		return new Promise(function(resolve, reject) {
-			prayerRequestApi.getPrayerRequests().then(
-				function(res) {	resolve(); },
-				function(err) {	reject(err); }
-			);
+			prayerRequestApi.ping().then(function(res) { resolve(); }, function(err) { reject(err); });
 		});
 	}
 }
