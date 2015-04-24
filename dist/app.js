@@ -1,5 +1,5 @@
 System.register(["aurelia-router"], function (_export) {
-	var Router, _createClass, _classCallCheck, App;
+	var Router, _createClass, _classCallCheck, App, AuthorizeStep;
 
 	return {
 		setters: [function (_aureliaRouter) {
@@ -14,17 +14,17 @@ System.register(["aurelia-router"], function (_export) {
 
 			App = _export("App", (function () {
 				function App(router) {
-					var _this = this;
-
 					_classCallCheck(this, App);
 
 					this.router = router;
 					this.router.configure(function (config) {
 						config.title = "SmallGroups";
-						config.map([{ route: ["admin"], moduleId: "admin", nav: _this.loggedIn, title: "Admin" }, { route: ["", "signup"], moduleId: "sign-up", nav: !_this.loggedIn, title: "Sign Up" }]);
+						config.addPipelineStep("authorize", AuthorizeStep);
+						config.map([{ route: ["admin"], moduleId: "admin", nav: true, title: "Admin", auth: true }, { route: ["signup"], moduleId: "sign-up", nav: true, title: "Sign Up" }, { route: ["", "login"], moduleId: "login", nav: true, title: "Login" }]);
 					});
-					this.activeUser = undefined; // Global as the rest of the app needs to access this.
-					this.loggedIn = false; // Global as the rest of the app needs to access this.
+					window.activeUser = undefined; // Global as the rest of the app needs to access this.
+					window.loggedIn = false; // Global as the rest of the app needs to access this.
+					window.access_token = ""; // Global as the rest of the app needs to access this.
 				}
 
 				_createClass(App, null, {
@@ -37,7 +37,30 @@ System.register(["aurelia-router"], function (_export) {
 
 				return App;
 			})());
+
+			AuthorizeStep = (function () {
+				function AuthorizeStep() {
+					_classCallCheck(this, AuthorizeStep);
+				}
+
+				_createClass(AuthorizeStep, {
+					run: {
+						value: function run(routingContext, next) {
+							if (routingContext.nextInstructions.some(function (i) {
+								return i.config.auth;
+							})) {
+								if (!window.loggedIn) {
+									return next.cancel(new Redirect("login"));
+								}
+							}
+							return next();
+						}
+					}
+				});
+
+				return AuthorizeStep;
+			})();
 		}
 	};
 });
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImFwcC5qcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0tBQVEsTUFBTSxpQ0FFRCxHQUFHOzs7O0FBRlIsU0FBTSxrQkFBTixNQUFNOzs7Ozs7Ozs7QUFFRCxNQUFHO0FBRUosYUFGQyxHQUFHLENBRUgsTUFBTSxFQUFFOzs7MkJBRlIsR0FBRzs7QUFHZCxTQUFJLENBQUMsTUFBTSxHQUFHLE1BQU0sQ0FBQztBQUNyQixTQUFJLENBQUMsTUFBTSxDQUFDLFNBQVMsQ0FBQyxVQUFBLE1BQU0sRUFBSTtBQUMvQixZQUFNLENBQUMsS0FBSyxHQUFHLGFBQWEsQ0FBQztBQUM3QixZQUFNLENBQUMsR0FBRyxDQUFDLENBQ1YsRUFBQyxLQUFLLEVBQUUsQ0FBQyxPQUFPLENBQUMsRUFBRSxRQUFRLEVBQUUsT0FBTyxFQUFFLEdBQUcsRUFBRSxNQUFLLFFBQVEsRUFBRSxLQUFLLEVBQUUsT0FBTyxFQUFDLEVBQ3pFLEVBQUMsS0FBSyxFQUFFLENBQUMsRUFBRSxFQUFFLFFBQVEsQ0FBQyxFQUFFLFFBQVEsRUFBRSxTQUFTLEVBQUUsR0FBRyxFQUFFLENBQUMsTUFBSyxRQUFRLEVBQUUsS0FBSyxFQUFFLFNBQVMsRUFBQyxDQUNuRixDQUFDLENBQUM7TUFDSCxDQUFDLENBQUM7QUFDSCxTQUFJLENBQUMsVUFBVSxHQUFHLFNBQVMsQ0FBQztBQUM1QixTQUFJLENBQUMsUUFBUSxHQUFHLEtBQUssQ0FBQztLQUN0Qjs7aUJBYlcsR0FBRztBQUNSLFdBQU07YUFBQSxrQkFBRztBQUFFLGNBQU8sQ0FBQyxNQUFNLENBQUMsQ0FBQztPQUFFOzs7O1dBRHhCLEdBQUciLCJmaWxlIjoiYXBwLmpzIiwic291cmNlUm9vdCI6Ii9zcmMvIn0=
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImFwcC5qcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0tBQVEsTUFBTSxpQ0FFRCxHQUFHLEVBbUJWLGFBQWE7Ozs7QUFyQlgsU0FBTSxrQkFBTixNQUFNOzs7Ozs7Ozs7QUFFRCxNQUFHO0FBRUosYUFGQyxHQUFHLENBRUgsTUFBTSxFQUFFOzJCQUZSLEdBQUc7O0FBR2QsU0FBSSxDQUFDLE1BQU0sR0FBRyxNQUFNLENBQUM7QUFDckIsU0FBSSxDQUFDLE1BQU0sQ0FBQyxTQUFTLENBQUMsVUFBQSxNQUFNLEVBQUk7QUFDL0IsWUFBTSxDQUFDLEtBQUssR0FBRyxhQUFhLENBQUM7QUFDN0IsWUFBTSxDQUFDLGVBQWUsQ0FBQyxXQUFXLEVBQUUsYUFBYSxDQUFDLENBQUM7QUFDbkQsWUFBTSxDQUFDLEdBQUcsQ0FBQyxDQUNWLEVBQUMsS0FBSyxFQUFFLENBQUMsT0FBTyxDQUFDLEVBQUUsUUFBUSxFQUFFLE9BQU8sRUFBRSxHQUFHLEVBQUUsSUFBSSxFQUFFLEtBQUssRUFBRSxPQUFPLEVBQUUsSUFBSSxFQUFFLElBQUksRUFBQyxFQUM1RSxFQUFDLEtBQUssRUFBRSxDQUFDLFFBQVEsQ0FBQyxFQUFFLFFBQVEsRUFBRSxTQUFTLEVBQUUsR0FBRyxFQUFFLElBQUksRUFBRSxLQUFLLEVBQUUsU0FBUyxFQUFDLEVBQ3JFLEVBQUMsS0FBSyxFQUFFLENBQUMsRUFBRSxFQUFFLE9BQU8sQ0FBQyxFQUFFLFFBQVEsRUFBRSxPQUFPLEVBQUUsR0FBRyxFQUFFLElBQUksRUFBRSxLQUFLLEVBQUUsT0FBTyxFQUFDLENBQ3BFLENBQUMsQ0FBQztNQUNILENBQUMsQ0FBQztBQUNILFdBQU0sQ0FBQyxVQUFVLEdBQUcsU0FBUyxDQUFDO0FBQzlCLFdBQU0sQ0FBQyxRQUFRLEdBQUcsS0FBSyxDQUFDO0FBQ3hCLFdBQU0sQ0FBQyxZQUFZLEdBQUcsRUFBRSxDQUFDO0tBQ3pCOztpQkFoQlcsR0FBRztBQUNSLFdBQU07YUFBQSxrQkFBRztBQUFFLGNBQU8sQ0FBQyxNQUFNLENBQUMsQ0FBQztPQUFFOzs7O1dBRHhCLEdBQUc7OztBQW1CVixnQkFBYTthQUFiLGFBQWE7MkJBQWIsYUFBYTs7O2lCQUFiLGFBQWE7QUFDbEIsUUFBRzthQUFBLGFBQUMsY0FBYyxFQUFFLElBQUksRUFBRTtBQUN6QixXQUFJLGNBQWMsQ0FBQyxnQkFBZ0IsQ0FBQyxJQUFJLENBQUMsVUFBQSxDQUFDO2VBQUksQ0FBQyxDQUFDLE1BQU0sQ0FBQyxJQUFJO1FBQUEsQ0FBQyxFQUFFO0FBQzdELFlBQUksQ0FBQyxNQUFNLENBQUMsUUFBUSxFQUFFO0FBQ3JCLGdCQUFPLElBQUksQ0FBQyxNQUFNLENBQUMsSUFBSSxRQUFRLENBQUMsT0FBTyxDQUFDLENBQUMsQ0FBQztTQUMxQztRQUNEO0FBQ0QsY0FBTyxJQUFJLEVBQUUsQ0FBQztPQUNkOzs7O1dBUkksYUFBYSIsImZpbGUiOiJhcHAuanMiLCJzb3VyY2VSb290IjoiL3NyYy8ifQ==

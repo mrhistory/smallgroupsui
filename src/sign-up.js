@@ -37,7 +37,6 @@ export class SignUp {
             } else {
                 this.errors.push(err.content.error.message);
             }
-            console.log(this.errors);
         }.bind(this));
     }
 
